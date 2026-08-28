@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html, body, #root {
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Font rendering */
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    background: #080808;
+    color: #f0ede6;
+  }
+
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: #0d0d0d; }
+  ::-webkit-scrollbar-thumb {
+    background: #2a2a2a;
+    border-radius: 0;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3a3a3a;
+  }
+
+  ::selection {
+    background: rgba(94, 210, 156, 0.28);
+    color: #f0ede6;
+  }
+
+  :focus-visible {
+    outline: 2px solid #5ed29c;
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .section-label {
+    @apply font-jakarta font-bold uppercase tracking-[0.18em];
+    font-size: 11px;
+    color: rgba(240, 237, 230, 0.4);
+  }
+
+  .section-heading {
+    @apply font-inter font-extrabold leading-tight tracking-tight;
+    color: #f0ede6;
+    font-size: clamp(32px, 4vw, 52px);
+  }
+
+  .card-surface {
+    background: #0d0d0d;
+    border: 1px solid rgba(240, 237, 230, 0.08);
+    transition: border-color 0.3s ease, background 0.3s ease;
+  }
+
+  .card-surface:hover {
+    border-color: rgba(240, 237, 230, 0.2);
+  }
+}
+
+@layer utilities {
+  /* Ticker pause on hover */
+  .ticker-track:hover { animation-play-state: paused; }
+}

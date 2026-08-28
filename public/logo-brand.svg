@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 260" fill="none">
+  <!-- Rayos (verde oscuro) -->
+  <line x1="100" y1="2"  x2="100" y2="18" stroke="#3a6b45" stroke-width="5.5" stroke-linecap="round"/>
+  <line x1="143" y1="13" x2="133" y2="27" stroke="#3a6b45" stroke-width="5.5" stroke-linecap="round"/>
+  <line x1="166" y1="50" x2="151" y2="54" stroke="#3a6b45" stroke-width="5.5" stroke-linecap="round"/>
+  <line x1="57"  y1="13" x2="67"  y2="27" stroke="#3a6b45" stroke-width="5.5" stroke-linecap="round"/>
+  <line x1="34"  y1="50" x2="49"  y2="54" stroke="#3a6b45" stroke-width="5.5" stroke-linecap="round"/>
+
+  <!-- Vidrio del foco — relleno BLANCO, borde negro grueso -->
+  <path d="M100 28 C68 28 42 54 42 86 C42 108 54 126 72 136 L72 158 L128 158 L128 136 C146 126 158 108 158 86 C158 54 132 28 100 28 Z"
+    fill="white" stroke="#111" stroke-width="7"/>
+
+  <!-- Globo relleno verde -->
+  <circle cx="100" cy="98" r="30" fill="#3a6b45"/>
+  <!-- Líneas del globo (negras) -->
+  <circle cx="100" cy="98" r="30" fill="none" stroke="#111" stroke-width="3"/>
+  <ellipse cx="100" cy="98" rx="15" ry="30" fill="none" stroke="#111" stroke-width="2.5"/>
+  <line x1="70" y1="88"  x2="130" y2="88"  stroke="#111" stroke-width="2.5"/>
+  <line x1="70" y1="108" x2="130" y2="108" stroke="#111" stroke-width="2.5"/>
+
+  <!-- </> sobre el globo -->
+  <text x="100" y="80" font-family="monospace" font-size="16" font-weight="900" fill="#111" text-anchor="middle">&lt;/&gt;</text>
+
+  <!-- Base — franjas negras -->
+  <rect x="72" y="158" width="56" height="13" rx="5" fill="#111"/>
+  <rect x="76" y="171" width="48" height="11" rx="4" fill="#333"/>
+  <rect x="80" y="182" width="40" height="10" rx="3" fill="#555"/>
+  <rect x="88" y="192" width="24" height="9"  rx="3" fill="#111"/>
+</svg>
