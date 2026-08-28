@@ -1,12 +1,14 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import MagneticButton from './MagneticButton'
+import { useTextScramble } from '../hooks/useTextScramble'
+import Logo from './Logo'
 import { useLang } from '../i18n'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const HLS = 'https://stream.mux.com/tLkHO1qZoaaQOUeVWo8hEBeGQfySP02EPS02BmnNFyXys.m3u8'
+const HLS   = 'https://stream.mux.com/tLkHO1qZoaaQOUeVWo8hEBeGQfySP02EPS02BmnNFyXys.m3u8'
 
 
 function VideoBackground({ videoRef }) {
@@ -35,40 +37,47 @@ function VideoBackground({ videoRef }) {
   return (
     <div style={{ position: 'absolute', inset: 0 }}>
       <video ref={videoRef}
-        style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.28 }}
+        style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.4 }}
         autoPlay muted loop playsInline crossOrigin="anonymous" />
       {/* Vignette */}
       <div style={{ position:'absolute', inset:0, background:'radial-gradient(ellipse at center, transparent 30%, #080808 100%)' }} />
       {/* Bottom gradient */}
-      <div style={{ position:'absolute', inset:0, background:'linear-gradient(to top, #080808 0%, transparent 55%)' }} />
+      <div style={{ position:'absolute', inset:0, background:'linear-gradient(to top, #080808 0%, transparent 50%)' }} />
     </div>
   )
 }
 
 export default function HeroSection() {
-  const sectionRef = useRef(null)
-  const videoRef   = useRef(null)
+  const sectionRef  = useRef(null)
+  const videoRef    = useRef(null)
+  const [ready, setReady] = useState(false)
   const { t } = useLang()
   const WA = `https://wa.me/541134076364?text=${encodeURIComponent(t.wa.msgLong)}`
   const TICKER = [...t.hero.ticker, ...t.hero.ticker]
-  const [line1, line2, line3] = t.hero.lines
+
+  const { display: line1 } = useTextScramble(t.hero.lines[0], ready, 1100)
+  const { display: line2 } = useTextScramble(t.hero.lines[1], ready, 1300)
+  const { display: line3 } = useTextScramble(t.hero.lines[2], ready, 1500)
+
+  // Trigger scramble after mount
+  useEffect(() => {
+    const timer = setTimeout(() => setReady(true), 400)
+    return () => clearTimeout(timer)
+  }, [])
 
   // Entrance animations
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      if (reduce) return
-      gsap.from('.hero-label', { opacity: 0, y: 16, duration: 0.6, delay: 0.2, ease: 'power3.out' })
-      gsap.from('.hero-line',  { opacity: 0, y: 40, duration: 0.8, stagger: 0.08, delay: 0.35, ease: 'power4.out' })
-      gsap.from('.hero-sub',   { opacity: 0, y: 16, duration: 0.6, delay: 0.75, ease: 'power3.out' })
-      gsap.from('.hero-cta',   { opacity: 0, y: 16, duration: 0.6, delay: 0.9, ease: 'power3.out' })
+      gsap.from('.hero-label', { opacity: 0, y: 20, duration: 0.7, delay: 0.3, ease: 'power3.out' })
+      gsap.from('.hero-line',  { opacity: 0, y: 60, duration: 0.9, stagger: 0.08, delay: 0.5, ease: 'power4.out' })
+      gsap.from('.hero-sub',   { opacity: 0, y: 20, duration: 0.7, delay: 1.1, ease: 'power3.out' })
+      gsap.from('.hero-cta',   { opacity: 0, y: 20, duration: 0.7, delay: 1.3, ease: 'power3.out' })
     }, sectionRef)
     return () => ctx.revert()
   }, [])
 
   // Scroll pin + fade out
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const ctx = gsap.context(() => {
       gsap.timeline({
         scrollTrigger: {
@@ -81,7 +90,7 @@ export default function HeroSection() {
         }
       })
       .to('.hero-content', { y: -80, opacity: 0, duration: 1 })
-      .to(videoRef.current, { opacity: 0.08, duration: 1 }, '<')
+      .to(videoRef.current, { opacity: 0.1, duration: 1 }, '<')
     }, sectionRef)
     return () => ctx.revert()
   }, [])
@@ -107,7 +116,7 @@ export default function HeroSection() {
             <span style={{ width:32, height:1, background:'#5ed29c', opacity:0.7 }} />
             <span style={{
               fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700, fontSize:11,
-              color:'#5ed29c', letterSpacing:'0.18em', textTransform:'uppercase',
+              color:'#5ed29c', letterSpacing:'0.22em', textTransform:'uppercase',
             }}>{t.hero.label}</span>
           </div>
         </div>
@@ -115,31 +124,36 @@ export default function HeroSection() {
         {/* Headline */}
         <h1 style={{ margin:0, lineHeight:0.98 }}>
           {[line1, line2].map((line, i) => (
-            <div key={i} className="hero-line" style={{ overflow:'hidden', paddingBottom:'0.2em', marginBottom:'-0.2em' }}>
+            <div key={i} className="hero-line" style={{ overflow:'hidden', fontSize:'clamp(44px, 7.5vw, 96px)', paddingBottom:'0.2em', marginBottom:'-0.2em' }}>
               <span style={{
                 display:'block',
                 fontFamily:'Inter,sans-serif', fontWeight:900,
                 fontSize:'clamp(44px, 7.5vw, 96px)',
                 color:'#f0ede6',
                 letterSpacing:'-0.03em',
+                fontVariantNumeric:'tabular-nums',
               }}>{line}</span>
             </div>
           ))}
-          <div className="hero-line" style={{ overflow:'hidden', paddingBottom:'0.2em', marginBottom:'-0.2em' }}>
+          <div className="hero-line" style={{ overflow:'hidden', fontSize:'clamp(44px, 7.5vw, 96px)', paddingBottom:'0.2em', marginBottom:'-0.2em' }}>
             <span style={{
               display:'block',
               fontFamily:'Inter,sans-serif', fontWeight:900,
               fontSize:'clamp(44px, 7.5vw, 96px)',
               letterSpacing:'-0.03em',
-              color:'#5ed29c',
-            }}>{line3}</span>
+            }}>
+              <span style={{
+                color:'#5ed29c',
+                textShadow:'0 0 80px rgba(94,210,156,0.4)',
+              }}>{line3}</span>
+            </span>
           </div>
         </h1>
 
         <p className="hero-sub" style={{
-          fontFamily:'Inter,sans-serif', fontSize:'clamp(15px,1.4vw,17px)',
-          color:'rgba(240,237,230,0.6)', maxWidth:480, lineHeight:1.65,
-          margin:'28px 0 36px',
+          fontFamily:'Inter,sans-serif', fontSize:'clamp(14px,1.4vw,17px)',
+          color:'rgba(240,237,230,0.45)', maxWidth:440, lineHeight:1.75,
+          margin:'32px 0 40px',
         }}>
           {t.hero.sub}
         </p>
@@ -151,9 +165,11 @@ export default function HeroSection() {
             style={{
               background:'#5ed29c', color:'#080808',
               fontFamily:'Inter,sans-serif', fontWeight:700,
-              fontSize:14, letterSpacing:'0.01em',
-              padding:'15px 30px', borderRadius:8,
+              fontSize:13, letterSpacing:'0.06em', textTransform:'uppercase',
+              padding:'15px 32px', borderRadius:999,
               textDecoration:'none',
+              boxShadow:'0 0 0 0 rgba(94,210,156,0)',
+              transition:'box-shadow 0.3s',
             }}
           >
             {t.hero.cta1}
@@ -162,10 +178,10 @@ export default function HeroSection() {
             href="#portfolio"
             style={{
               fontFamily:'Inter,sans-serif', fontWeight:600, fontSize:14,
-              color:'rgba(240,237,230,0.6)',
-              textDecoration:'underline', textUnderlineOffset:'4px',
-              textDecorationColor:'rgba(240,237,230,0.25)',
+              color:'rgba(240,237,230,0.45)',
+              textDecoration:'none',
               padding:'15px 0',
+              transition:'color 0.2s',
             }}
           >
             {t.hero.cta2}
@@ -180,19 +196,19 @@ export default function HeroSection() {
       }}>
         <p style={{
           fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:9,
-          color:'rgba(240,237,230,0.25)', letterSpacing:'0.25em', textTransform:'uppercase',
+          color:'rgba(240,237,230,0.2)', letterSpacing:'0.25em', textTransform:'uppercase',
         }}>{t.hero.scroll}</p>
-        <div style={{ width:1, height:32, background:'rgba(240,237,230,0.2)' }} />
+        <div style={{ width:1, height:36, background:'rgba(240,237,230,0.2)' }} />
       </div>
 
       {/* Ticker */}
-      <div className="ticker-track" style={{
+      <div style={{
         position:'absolute', bottom:0, left:0, right:0, zIndex:4,
-        borderTop:'1px solid rgba(240,237,230,0.06)',
+        borderTop:'1px solid rgba(240,237,230,0.05)',
         padding:'10px 0', overflow:'hidden',
         background:'rgba(8,8,8,0.6)', backdropFilter:'blur(10px)',
       }}>
-        <div style={{ display:'flex', animation:'ticker 26s linear infinite', whiteSpace:'nowrap' }}>
+        <div style={{ display:'flex', animation:'ticker 20s linear infinite', whiteSpace:'nowrap' }}>
           {TICKER.map((item, i) => (
             <span key={i} style={{
               display:'inline-flex', alignItems:'center', gap:14, marginRight:14,
@@ -207,13 +223,10 @@ export default function HeroSection() {
       </div>
 
       <style>{`
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-        .ticker-track:hover > div { animation-play-state: paused; }
         @media (max-width: 768px) {
           .hero-content { max-width: 100% !important; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .ticker-track > div { animation: none !important; }
         }
       `}</style>
     </section>

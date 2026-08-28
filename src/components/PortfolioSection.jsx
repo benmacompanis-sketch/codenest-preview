@@ -59,10 +59,9 @@ function ProjectCard({ project, index }) {
   const [hovered, setHovered] = useState(false)
 
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     gsap.from(cardRef.current, {
       scrollTrigger: { trigger: cardRef.current, start: 'top 96%' },
-      y: 40, opacity: 0, duration: 0.7,
+      y: 60, opacity: 0, duration: 0.8,
       delay: index * 0.05,
       ease: 'power3.out',
     })
@@ -74,16 +73,18 @@ function ProjectCard({ project, index }) {
       href={project.url}
       target="_blank"
       rel="noopener noreferrer"
+      data-cursor
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
         display: 'block', textDecoration: 'none',
         background: project.bg,
-        borderRadius: 12, overflow: 'hidden',
+        borderRadius: 20, overflow: 'hidden',
         aspectRatio: '4/3', position: 'relative',
-        transition: 'box-shadow 0.3s, border-color 0.3s',
-        boxShadow: hovered ? '0 24px 60px rgba(0,0,0,0.45)' : '0 0 0 rgba(0,0,0,0)',
-        border: `1px solid ${hovered ? 'rgba(240,237,230,0.28)' : 'rgba(240,237,230,0.1)'}`,
+        transform: hovered ? 'scale(1.02)' : 'scale(1)',
+        transition: 'transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94), box-shadow 0.4s, outline-color 0.3s',
+        boxShadow: hovered ? `0 30px 80px rgba(94,210,156,0.2)` : '0 0 0 rgba(0,0,0,0)',
+        outline: `1px solid ${hovered ? 'rgba(94,210,156,0.6)' : 'rgba(240,237,230,0.12)'}`,
       }}
     >
       {/* Screenshot */}
@@ -102,9 +103,19 @@ function ProjectCard({ project, index }) {
       {/* Dark overlay that lifts on hover */}
       <div style={{
         position: 'absolute', inset: 0,
-        background: hovered ? 'rgba(0,0,0,0.25)' : 'rgba(0,0,0,0.5)',
-        transition: 'background 0.3s',
+        background: hovered ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.45)',
+        transition: 'background 0.4s',
       }} />
+      {/* Accent glow */}
+      <div style={{
+        position:'absolute', top:-40, right:-40,
+        width:200, height:200, borderRadius:'50%',
+        background: project.accent,
+        opacity: hovered ? 0.18 : 0.06,
+        filter:'blur(60px)',
+        transition:'opacity 0.4s',
+        pointerEvents: 'none',
+      }}/>
 
       {/* Bottom info */}
       <div style={{
@@ -127,10 +138,12 @@ function ProjectCard({ project, index }) {
             }}>{project.name}</p>
           </div>
           <div style={{
-            width:44, height:44, borderRadius:8,
-            background: hovered ? '#5ed29c' : 'rgba(255,255,255,0.12)',
+            width:44, height:44, borderRadius:'50%',
+            background: hovered ? project.accent : 'rgba(255,255,255,0.1)',
+            backdropFilter:'blur(8px)',
             display:'flex', alignItems:'center', justifyContent:'center',
-            transition:'background 0.3s',
+            transition:'background 0.3s, transform 0.3s',
+            transform: hovered ? 'rotate(0deg)' : 'rotate(-45deg)',
             flexShrink:0,
           }}>
             <ArrowUpRight size={18} color={hovered ? '#080808' : '#ffffff'} />
@@ -148,18 +161,17 @@ export default function PortfolioSection() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
       gsap.from('.port-label', {
-        scrollTrigger: { trigger: '.port-label', start: 'top 94%' },
-        y: 16, opacity: 0, duration: 0.6, ease: 'power3.out',
+        scrollTrigger: { trigger: '.port-label', start: 'top 96%' },
+        x: -30, opacity: 0, duration: 0.7, ease: 'power3.out',
       })
       gsap.from('.port-title', {
-        scrollTrigger: { trigger: '.port-title', start: 'top 94%' },
-        y: 32, opacity: 0, duration: 0.7, ease: 'power3.out',
+        scrollTrigger: { trigger: '.port-title', start: 'top 96%' },
+        y: 70, opacity: 0, duration: 1, ease: 'power4.out',
       })
       gsap.from('.port-sub', {
-        scrollTrigger: { trigger: '.port-sub', start: 'top 94%' },
-        opacity: 0, y: 16, duration: 0.6, delay: 0.1, ease: 'power3.out',
+        scrollTrigger: { trigger: '.port-sub', start: 'top 96%' },
+        opacity: 0, x: 30, duration: 0.8, delay: 0.2, ease: 'power3.out',
       })
     }, sectionRef)
     return () => ctx.revert()
@@ -177,11 +189,11 @@ export default function PortfolioSection() {
           <div>
             <p className="port-label" style={{
               fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700, fontSize:11,
-              color:'rgba(240,237,230,0.4)', letterSpacing:'0.18em', textTransform:'uppercase', marginBottom:16,
+              color:'#5ed29c', letterSpacing:'0.22em', textTransform:'uppercase', marginBottom:16,
             }}>{t.portfolio.label}</p>
             <h2 className="port-title" style={{
               fontFamily:'Inter,sans-serif', fontWeight:900,
-              fontSize:'clamp(36px,5vw,60px)', color:'#f0ede6',
+              fontSize:'clamp(36px,5vw,64px)', color:'#f0ede6',
               lineHeight:1.05, margin:0, letterSpacing:'-0.02em',
             }}>
               {t.portfolio.title}<br />{t.portfolio.title2} <span style={{ color:'#5ed29c' }}>{t.portfolio.titleAccent}</span>
@@ -189,7 +201,7 @@ export default function PortfolioSection() {
           </div>
           <p className="port-sub" style={{
             fontFamily:'Inter,sans-serif', fontSize:14,
-            color:'rgba(240,237,230,0.5)', maxWidth:260, lineHeight:1.6, margin:0,
+            color:'rgba(240,237,230,0.35)', maxWidth:260, lineHeight:1.7, margin:0,
           }}>
             {t.portfolio.sub}
           </p>

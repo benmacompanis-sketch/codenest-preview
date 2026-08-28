@@ -1,10 +1,22 @@
 import { useRef } from 'react'
+import { gsap } from 'gsap'
 
-// Kept as a thin wrapper so existing call sites don't change. The magnetic
-// cursor-follow effect was removed — it read as a template flourish and got in
-// the way of plain clicking.
-export default function MagneticButton({ children, style, href, target, rel, onClick }) {
+export default function MagneticButton({ children, style, href, target, rel, onClick, strength = 0.4 }) {
   const btnRef = useRef(null)
+
+  const onMove = (e) => {
+    const btn = btnRef.current
+    if (!btn) return
+    const rect = btn.getBoundingClientRect()
+    const x = (e.clientX - rect.left - rect.width  / 2) * strength
+    const y = (e.clientY - rect.top  - rect.height / 2) * strength
+    gsap.to(btn, { x, y, duration: 0.3, ease: 'power2.out' })
+  }
+
+  const onLeave = () => {
+    gsap.to(btnRef.current, { x: 0, y: 0, duration: 0.6, ease: 'elastic.out(1, 0.4)' })
+  }
+
   const Tag = href ? 'a' : 'button'
 
   return (
@@ -14,9 +26,10 @@ export default function MagneticButton({ children, style, href, target, rel, onC
       target={target}
       rel={rel}
       onClick={onClick}
-      style={{ display: 'inline-block', transition: 'opacity 0.2s, background 0.2s, color 0.2s', ...style }}
-      onMouseEnter={e => { e.currentTarget.style.opacity = '0.9' }}
-      onMouseLeave={e => { e.currentTarget.style.opacity = '1' }}
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      data-cursor
+      style={{ display: 'inline-block', ...style }}
     >
       {children}
     </Tag>

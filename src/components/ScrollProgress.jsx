@@ -36,7 +36,7 @@ export default function ScrollProgress() {
       style={{
         position: 'fixed', top: 0, left: 0, zIndex: 9998,
         height: 2, width: '100%',
-        background: '#5ed29c',
+        background: 'linear-gradient(90deg, #5ed29c, #a8f0cc)',
         transform: 'scaleX(0)',
         transformOrigin: 'left center',
         willChange: 'transform',

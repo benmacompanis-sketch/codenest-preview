@@ -103,15 +103,14 @@ export default function ServicesSection() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
       gsap.from('.srv-title', {
-        scrollTrigger: { trigger: '.srv-title', start: 'top 94%' },
-        y: 32, opacity: 0, duration: 0.7, ease: 'power3.out',
+        scrollTrigger: { trigger: '.srv-title', start: 'top 96%' },
+        y: 80, opacity: 0, duration: 1, ease: 'power4.out',
       })
       gsap.utils.toArray('.srv-row').forEach((row) => {
         gsap.from(row, {
           scrollTrigger: { trigger: row, start: 'top 96%' },
-          y: 20, opacity: 0, duration: 0.5, ease: 'power3.out',
+          x: -40, opacity: 0, duration: 0.6, ease: 'power3.out',
         })
       })
     }, sectionRef)
@@ -130,11 +129,11 @@ export default function ServicesSection() {
           <div>
             <p style={{
               fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700, fontSize:11,
-              color:'rgba(240,237,230,0.4)', letterSpacing:'0.18em', textTransform:'uppercase', marginBottom:16,
+              color:'#5ed29c', letterSpacing:'0.22em', textTransform:'uppercase', marginBottom:16,
             }}>{t.services.label}</p>
             <h2 className="srv-title" style={{
               fontFamily:'Inter,sans-serif', fontWeight:900,
-              fontSize:'clamp(36px,5vw,60px)', color:'#f0ede6',
+              fontSize:'clamp(36px,5vw,64px)', color:'#f0ede6',
               lineHeight:1.05, margin:0, letterSpacing:'-0.02em',
             }}>
               {t.services.title}<br /><span style={{ color:'#5ed29c' }}>{t.services.titleAccent}</span>
@@ -142,7 +141,7 @@ export default function ServicesSection() {
           </div>
           <p style={{
             fontFamily:'Inter,sans-serif', fontSize:14,
-            color:'rgba(240,237,230,0.5)', maxWidth:280, lineHeight:1.6, margin:0,
+            color:'rgba(240,237,230,0.35)', maxWidth:280, lineHeight:1.7, margin:0,
           }}>
             {t.services.hint}
           </p>
@@ -157,9 +156,9 @@ export default function ServicesSection() {
         <div style={{
           marginTop: 48,
           padding: '28px 32px',
-          borderRadius: 10,
-          border: '1px solid rgba(240,237,230,0.12)',
-          background: 'rgba(240,237,230,0.02)',
+          borderRadius: 16,
+          border: '1px solid rgba(94,210,156,0.15)',
+          background: 'rgba(94,210,156,0.04)',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           flexWrap: 'wrap', gap: 16,
         }}>
@@ -177,8 +176,8 @@ export default function ServicesSection() {
             style={{
               fontFamily:'Inter,sans-serif', fontWeight:700, fontSize:13,
               background:'#5ed29c', color:'#080808',
-              padding:'13px 24px', borderRadius:8, textDecoration:'none',
-              flexShrink:0, whiteSpace:'nowrap',
+              padding:'12px 24px', borderRadius:999, textDecoration:'none',
+              letterSpacing:'0.04em', flexShrink:0, whiteSpace:'nowrap',
             }}
           >
             {t.services.customBtn}

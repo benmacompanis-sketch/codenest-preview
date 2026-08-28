@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import MagneticButton from './MagneticButton'
+import Logo from './Logo'
 import { asset } from '../utils/assetPath'
 import { useLang } from '../i18n'
 
@@ -87,15 +87,18 @@ export default function Navigation() {
               {label}
             </a>
           ))}
-          <MagneticButton href={WA} target="_blank" rel="noopener noreferrer"
+          <a href={WA} target="_blank" rel="noopener noreferrer"
             style={{
               fontFamily:'Inter,sans-serif', fontWeight:600, fontSize:13,
               background:'transparent', color:'#5ed29c',
               border:'1px solid rgba(94,210,156,0.4)',
               padding:'9px 18px', borderRadius:8, textDecoration:'none',
-            }}>
+              transition:'background 0.2s, color 0.2s, border-color 0.2s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = '#5ed29c'; e.currentTarget.style.color = '#080808'; e.currentTarget.style.borderColor = '#5ed29c' }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#5ed29c'; e.currentTarget.style.borderColor = 'rgba(94,210,156,0.4)' }}>
             {t.nav.contact}
-          </MagneticButton>
+          </a>
           <LangSwitch />
         </div>
 
@@ -129,7 +132,7 @@ export default function Navigation() {
           <a href={WA} target="_blank" rel="noopener noreferrer" style={{
             fontFamily:'Inter,sans-serif', fontWeight:700, fontSize:15,
             background:'#5ed29c', color:'#080808',
-            padding:'14px 32px', borderRadius:8, textDecoration:'none', marginTop:12,
+            padding:'14px 36px', borderRadius:8, textDecoration:'none', marginTop:12,
           }}>{t.nav.contact}</a>
           <LangSwitch compact />
         </div>
