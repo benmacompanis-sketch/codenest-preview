@@ -93,7 +93,6 @@ export default function CTASection() {
                 fontFamily:'Inter,sans-serif', fontWeight:900,
                 fontSize:'clamp(40px,7vw,96px)',
                 color: li === 2 ? '#5ed29c' : '#f0ede6',
-                textShadow: li === 2 ? '0 0 80px rgba(94,210,156,0.4)' : 'none',
               }}>{line}</span>
             </div>
           ))}

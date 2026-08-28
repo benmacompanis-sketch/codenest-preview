@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, lazy, Suspense } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import MagneticButton from './MagneticButton'
 import { useTextScramble } from '../hooks/useTextScramble'
 import Logo from './Logo'
 import { useLang } from '../i18n'
+
+const ParticleGlobe = lazy(() => import('./ParticleGlobe'))
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -50,6 +52,8 @@ function VideoBackground({ videoRef }) {
 export default function HeroSection() {
   const sectionRef  = useRef(null)
   const videoRef    = useRef(null)
+  const floatRef    = useRef(null)
+  const mousePos    = useRef({ x: 0, y: 0 })
   const [ready, setReady] = useState(false)
   const { t } = useLang()
   const WA = `https://wa.me/541134076364?text=${encodeURIComponent(t.wa.msgLong)}`
@@ -65,6 +69,34 @@ export default function HeroSection() {
     return () => clearTimeout(timer)
   }, [])
 
+  // Mouse parallax — throttled to every 2 frames
+  useEffect(() => {
+    const onMove = (e) => {
+      mousePos.current = {
+        x: (e.clientX / window.innerWidth  - 0.5) * 2,
+        y: (e.clientY / window.innerHeight - 0.5) * 2,
+      }
+    }
+    window.addEventListener('mousemove', onMove, { passive: true })
+
+    let raf, fc = 0
+    const tick = () => {
+      fc++
+      if (fc % 2 === 0 && floatRef.current) {
+        gsap.to(floatRef.current, {
+          x: mousePos.current.x * 30,
+          y: mousePos.current.y * 20,
+          duration: 1.4,
+          ease: 'power2.out',
+          overwrite: 'auto',
+        })
+      }
+      raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => { window.removeEventListener('mousemove', onMove); cancelAnimationFrame(raf) }
+  }, [])
+
   // Entrance animations
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -72,6 +104,7 @@ export default function HeroSection() {
       gsap.from('.hero-line',  { opacity: 0, y: 60, duration: 0.9, stagger: 0.08, delay: 0.5, ease: 'power4.out' })
       gsap.from('.hero-sub',   { opacity: 0, y: 20, duration: 0.7, delay: 1.1, ease: 'power3.out' })
       gsap.from('.hero-cta',   { opacity: 0, y: 20, duration: 0.7, delay: 1.3, ease: 'power3.out' })
+      gsap.from(floatRef.current, { opacity: 0, scale: 0.8, duration: 1, delay: 0.8, ease: 'power3.out' })
     }, sectionRef)
     return () => ctx.revert()
   }, [])
@@ -101,13 +134,32 @@ export default function HeroSection() {
     }}>
       <VideoBackground videoRef={videoRef} />
 
+      {/* Noise grain */}
+      <div style={{ position:'absolute', inset:0, opacity:0.03, zIndex:1, pointerEvents:'none',
+        backgroundImage:`url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+      }} />
+
+      {/* Particle Globe — hidden on mobile */}
+      <div ref={floatRef} className="hero-globe" style={{
+        position: 'absolute', top: '50%', right: '2%',
+        transform: 'translateY(-50%)',
+        width: 'clamp(320px, 44vw, 640px)',
+        height: 'clamp(320px, 44vw, 640px)',
+        zIndex: 2,
+        willChange: 'transform',
+      }}>
+        <Suspense fallback={null}>
+          <ParticleGlobe />
+        </Suspense>
+      </div>
+
       {/* Main content */}
       <div className="hero-content" style={{
         position: 'absolute', inset: 0, zIndex: 3,
         display: 'flex', flexDirection: 'column', justifyContent: 'center',
         padding: 'clamp(20px, 5vw, 80px)',
         paddingTop: 'clamp(100px, 14vw, 160px)',
-        maxWidth: 900,
+        maxWidth: 1000,
         willChange: 'transform, opacity',
       }}>
         {/* Label */}
@@ -122,29 +174,28 @@ export default function HeroSection() {
         </div>
 
         {/* Headline */}
-        <h1 style={{ margin:0, lineHeight:0.98 }}>
+        <h1 style={{ margin:0, lineHeight:0.95 }}>
           {[line1, line2].map((line, i) => (
-            <div key={i} className="hero-line" style={{ overflow:'hidden', fontSize:'clamp(44px, 7.5vw, 96px)', paddingBottom:'0.2em', marginBottom:'-0.2em' }}>
+            <div key={i} className="hero-line" style={{ overflow:'hidden', fontSize:'clamp(48px, 8vw, 108px)', paddingBottom:'0.2em', marginBottom:'-0.2em' }}>
               <span style={{
                 display:'block',
                 fontFamily:'Inter,sans-serif', fontWeight:900,
-                fontSize:'clamp(44px, 7.5vw, 96px)',
+                fontSize:'clamp(48px, 8vw, 108px)',
                 color:'#f0ede6',
                 letterSpacing:'-0.03em',
                 fontVariantNumeric:'tabular-nums',
               }}>{line}</span>
             </div>
           ))}
-          <div className="hero-line" style={{ overflow:'hidden', fontSize:'clamp(44px, 7.5vw, 96px)', paddingBottom:'0.2em', marginBottom:'-0.2em' }}>
+          <div className="hero-line" style={{ overflow:'hidden', fontSize:'clamp(48px, 8vw, 108px)', paddingBottom:'0.2em', marginBottom:'-0.2em' }}>
             <span style={{
               display:'block',
               fontFamily:'Inter,sans-serif', fontWeight:900,
-              fontSize:'clamp(44px, 7.5vw, 96px)',
+              fontSize:'clamp(48px, 8vw, 108px)',
               letterSpacing:'-0.03em',
             }}>
               <span style={{
                 color:'#5ed29c',
-                textShadow:'0 0 80px rgba(94,210,156,0.4)',
               }}>{line3}</span>
             </span>
           </div>
@@ -198,7 +249,10 @@ export default function HeroSection() {
           fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:9,
           color:'rgba(240,237,230,0.2)', letterSpacing:'0.25em', textTransform:'uppercase',
         }}>{t.hero.scroll}</p>
-        <div style={{ width:1, height:36, background:'rgba(240,237,230,0.2)' }} />
+        <div style={{
+          width:1, height:36,
+          background:'linear-gradient(to bottom, rgba(94,210,156,0.5), transparent)',
+        }} />
       </div>
 
       {/* Ticker */}
@@ -211,12 +265,12 @@ export default function HeroSection() {
         <div style={{ display:'flex', animation:'ticker 20s linear infinite', whiteSpace:'nowrap' }}>
           {TICKER.map((item, i) => (
             <span key={i} style={{
-              display:'inline-flex', alignItems:'center', gap:14, marginRight:14,
+              display:'inline-flex', alignItems:'center', gap:10, marginRight:40,
               fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:600,
-              fontSize:11, color:'rgba(240,237,230,0.3)',
-              letterSpacing:'0.1em', flexShrink:0,
+              fontSize:10, color:'rgba(240,237,230,0.18)',
+              letterSpacing:'0.2em', textTransform:'uppercase', flexShrink:0,
             }}>
-              {item}<span style={{ color:'rgba(240,237,230,0.15)' }}>/</span>
+              <span style={{ color:'#5ed29c', opacity:0.4, fontSize:12 }}>✦</span>{item}
             </span>
           ))}
         </div>
@@ -226,6 +280,15 @@ export default function HeroSection() {
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
         @media (max-width: 768px) {
+          .hero-globe {
+            top: auto !important;
+            bottom: 60px !important;
+            right: 50% !important;
+            transform: translateX(50%) !important;
+            width: 280px !important;
+            height: 280px !important;
+            opacity: 0.6;
+          }
           .hero-content { max-width: 100% !important; }
         }
       `}</style>

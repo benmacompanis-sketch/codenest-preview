@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { LanguageProvider } from './i18n'
 import { LenisProvider } from './context/lenis'
+import CustomCursor from './components/CustomCursor'
 import Navigation from './components/Navigation'
 import HeroSection from './components/HeroSection'
 import ServicesSection from './components/ServicesSection'
@@ -25,6 +26,7 @@ export default function App() {
           transition: 'opacity 0.8s ease',
           pointerEvents: introComplete ? 'auto' : 'none',
         }}>
+          <CustomCursor />
           <ScrollProgress />
           <Navigation />
           <main>
