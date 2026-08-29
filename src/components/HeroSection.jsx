@@ -174,24 +174,24 @@ export default function HeroSection() {
         </div>
 
         {/* Headline */}
-        <h1 style={{ margin:0, lineHeight:0.95 }}>
+        <h1 style={{ margin:0, lineHeight:0.98 }}>
           {[line1, line2].map((line, i) => (
-            <div key={i} className="hero-line" style={{ overflow:'hidden', fontSize:'clamp(48px, 8vw, 108px)', paddingBottom:'0.2em', marginBottom:'-0.2em' }}>
+            <div key={i} className="hero-line" style={{ overflow:'hidden', fontSize:'clamp(44px, 7.5vw, 96px)', paddingBottom:'0.2em', marginBottom:'-0.2em' }}>
               <span style={{
                 display:'block',
                 fontFamily:'Inter,sans-serif', fontWeight:900,
-                fontSize:'clamp(48px, 8vw, 108px)',
+                fontSize:'clamp(44px, 7.5vw, 96px)',
                 color:'#f0ede6',
                 letterSpacing:'-0.03em',
                 fontVariantNumeric:'tabular-nums',
               }}>{line}</span>
             </div>
           ))}
-          <div className="hero-line" style={{ overflow:'hidden', fontSize:'clamp(48px, 8vw, 108px)', paddingBottom:'0.2em', marginBottom:'-0.2em' }}>
+          <div className="hero-line" style={{ overflow:'hidden', fontSize:'clamp(44px, 7.5vw, 96px)', paddingBottom:'0.2em', marginBottom:'-0.2em' }}>
             <span style={{
               display:'block',
               fontFamily:'Inter,sans-serif', fontWeight:900,
-              fontSize:'clamp(48px, 8vw, 108px)',
+              fontSize:'clamp(44px, 7.5vw, 96px)',
               letterSpacing:'-0.03em',
             }}>
               <span style={{
